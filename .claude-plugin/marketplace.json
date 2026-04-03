@@ -5,12 +5,12 @@
   },
   "metadata": {
     "description": "Claude plugins published from the ChaseWNorton shopify-admin-mcp repository.",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "plugins": [
     {
       "name": "shopify-admin",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Shopify Admin GraphQL MCP tools and workflow guidance for Claude.",
       "author": {
         "name": "Chas E Norton",
