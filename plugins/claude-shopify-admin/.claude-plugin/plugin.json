@@ -1,5 +1,6 @@
 {
   "name": "shopify-admin",
+  "version": "0.1.0",
   "description": "Shopify Admin GraphQL MCP tools for Claude Code.",
   "author": {
     "name": "Chas E Norton",
@@ -19,18 +20,26 @@
   "mcpServers": "./.mcp.json",
   "userConfig": {
     "shopify_store": {
+      "type": "string",
+      "title": "Shopify Store",
       "description": "Shopify store domain, for example my-store.myshopify.com",
       "sensitive": false
     },
     "shopify_client_id": {
+      "type": "string",
+      "title": "Client ID",
       "description": "Shopify Dev Dashboard app client ID",
       "sensitive": false
     },
     "shopify_client_secret": {
+      "type": "string",
+      "title": "Client Secret",
       "description": "Shopify Dev Dashboard app client secret",
       "sensitive": true
     },
     "shopify_api_version": {
+      "type": "string",
+      "title": "API Version",
       "description": "Shopify Admin API version, for example 2025-07",
       "sensitive": false
     }
