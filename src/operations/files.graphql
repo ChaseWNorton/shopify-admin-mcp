@@ -1,0 +1,103 @@
+query ListFiles($first: Int!, $after: String, $query: String) {
+  files(first: $first, after: $after, query: $query) {
+    edges {
+      node {
+        __typename
+        id
+        alt
+        fileStatus
+        createdAt
+        updatedAt
+        ... on MediaImage {
+          image {
+            url
+            altText
+          }
+        }
+        ... on GenericFile {
+          url
+          mimeType
+          originalFileSize
+        }
+        ... on Video {
+          alt
+          duration
+          sources {
+            url
+            mimeType
+          }
+        }
+        ... on Model3d {
+          alt
+          sources {
+            url
+            mimeType
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateStagedUpload($input: [StagedUploadInput!]!) {
+  stagedUploadsCreate(input: $input) {
+    stagedTargets {
+      url
+      resourceUrl
+      parameters {
+        name
+        value
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation CreateFile($files: [FileCreateInput!]!) {
+  fileCreate(files: $files) {
+    files {
+      __typename
+      id
+      alt
+      fileStatus
+      createdAt
+      updatedAt
+      ... on MediaImage {
+        image {
+          url
+          altText
+        }
+      }
+      ... on GenericFile {
+        url
+        mimeType
+      }
+      ... on Video {
+        alt
+        duration
+        sources {
+          url
+          mimeType
+        }
+      }
+      ... on Model3d {
+        alt
+        sources {
+          url
+          mimeType
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "shopify-admin-mcp",
+  "version": "0.1.0",
+  "description": "Production-grade MCP server for the Shopify Admin GraphQL API",
+  "type": "module",
+  "license": "BUSL-1.1",
+  "main": "./dist/index.js",
+  "bin": {
+    "shopify-admin-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    ".env.example",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && find dist/operations -maxdepth 1 \\( -name '*.graphql' -o -name '*.ts' \\) -delete && cp src/operations/*.graphql dist/operations/ && cp src/schema/admin.graphql dist/schema/admin.graphql",
+    "clean": "rm -rf dist coverage .vitest-temp",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "generate-types": "./scripts/generate-types.sh",
+    "pull-schema": "./scripts/pull-schema.sh",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "upgrade-api": "./scripts/upgrade-api.sh"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0",
+    "@shopify/admin-api-client": "^1.0",
+    "zod": "^3.22"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0",
+    "@shopify/api-codegen-preset": "^1.0",
+    "tsx": "^4.0",
+    "typescript": "^5.4",
+    "vitest": "^2.0"
+  }
+}

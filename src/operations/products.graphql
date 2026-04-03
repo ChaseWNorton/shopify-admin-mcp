@@ -1,0 +1,198 @@
+query GetProduct($id: ID!) {
+  product(id: $id) {
+    id
+    title
+    handle
+    descriptionHtml
+    vendor
+    productType
+    status
+    tags
+    totalInventory
+    createdAt
+    updatedAt
+    variants(first: 100) {
+      edges {
+        node {
+          id
+          title
+          displayName
+          price
+          sku
+          inventoryQuantity
+          inventoryPolicy
+          selectedOptions {
+            name
+            value
+          }
+          inventoryItem {
+            id
+            tracked
+          }
+        }
+      }
+    }
+    media(first: 20) {
+      edges {
+        node {
+          __typename
+          ... on MediaImage {
+            id
+            image {
+              url
+              altText
+            }
+          }
+          ... on Video {
+            id
+            alt
+            sources {
+              url
+              mimeType
+            }
+          }
+          ... on ExternalVideo {
+            id
+            alt
+            originUrl
+            embedUrl
+          }
+          ... on Model3d {
+            id
+            alt
+            sources {
+              url
+              mimeType
+            }
+          }
+        }
+      }
+    }
+    metafields(first: 50) {
+      edges {
+        node {
+          id
+          namespace
+          key
+          value
+          type
+          compareDigest
+        }
+      }
+    }
+  }
+}
+
+query ListProducts($first: Int!, $query: String, $after: String) {
+  products(first: $first, query: $query, after: $after) {
+    edges {
+      node {
+        id
+        title
+        handle
+        vendor
+        productType
+        status
+        totalInventory
+        createdAt
+        updatedAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query ListProductVariants($id: ID!, $first: Int!, $after: String) {
+  product(id: $id) {
+    id
+    variants(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          title
+          displayName
+          price
+          sku
+          inventoryQuantity
+          inventoryPolicy
+          selectedOptions {
+            name
+            value
+          }
+          inventoryItem {
+            id
+            tracked
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+mutation CreateProduct($product: ProductCreateInput!) {
+  productCreate(product: $product) {
+    product {
+      id
+      title
+      handle
+      status
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation UpdateProduct($product: ProductUpdateInput!) {
+  productUpdate(product: $product) {
+    product {
+      id
+      title
+      handle
+      status
+      updatedAt
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteProduct($input: ProductDeleteInput!) {
+  productDelete(input: $input) {
+    deletedProductId
+    productDeleteOperation {
+      id
+      status
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation UpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
+  productVariantsBulkUpdate(productId: $productId, variants: $variants) {
+    productVariants {
+      id
+      displayName
+      price
+      sku
+      inventoryPolicy
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

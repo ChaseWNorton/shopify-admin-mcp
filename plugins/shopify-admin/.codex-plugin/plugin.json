@@ -1,0 +1,30 @@
+{
+  "name": "shopify-admin",
+  "version": "0.1.0",
+  "description": "Shopify Admin GraphQL MCP tools for Codex.",
+  "license": "BUSL-1.1",
+  "keywords": [
+    "shopify",
+    "mcp",
+    "graphql",
+    "commerce"
+  ],
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Shopify Admin",
+    "shortDescription": "Typed Shopify Admin tools for Codex.",
+    "longDescription": "Run Shopify Admin GraphQL actions from Codex with typed tools for products, orders, customers, inventory, discounts, webhooks, files, and more.",
+    "developerName": "Chas E Norton",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "List recent Shopify orders and summarize issues.",
+      "Find products with low inventory and show variants.",
+      "Create a draft order for a customer."
+    ],
+    "brandColor": "#0A7C66"
+  }
+}

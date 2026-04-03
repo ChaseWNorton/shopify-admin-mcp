@@ -1,0 +1,92 @@
+query GetCollection($id: ID!, $productFirst: Int!, $after: String) {
+  collection(id: $id) {
+    id
+    title
+    handle
+    descriptionHtml
+    sortOrder
+    updatedAt
+    ruleSet {
+      appliedDisjunctively
+      rules {
+        column
+        relation
+        condition
+      }
+    }
+    products(first: $productFirst, after: $after) {
+      edges {
+        node {
+          id
+          title
+          handle
+          status
+          totalInventory
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+query ListCollections($first: Int!, $query: String, $after: String) {
+  collections(first: $first, query: $query, after: $after) {
+    edges {
+      node {
+        id
+        title
+        handle
+        updatedAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateCollection($input: CollectionInput!) {
+  collectionCreate(input: $input) {
+    collection {
+      id
+      title
+      handle
+      updatedAt
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation AddProductsToCollection($id: ID!, $productIds: [ID!]!) {
+  collectionAddProducts(id: $id, productIds: $productIds) {
+    collection {
+      id
+      title
+      handle
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation RemoveProductsFromCollection($id: ID!, $productIds: [ID!]!) {
+  collectionRemoveProducts(id: $id, productIds: $productIds) {
+    job {
+      id
+      done
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

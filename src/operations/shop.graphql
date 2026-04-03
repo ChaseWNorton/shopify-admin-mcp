@@ -1,0 +1,19 @@
+query GetShop {
+  shop {
+    id
+    name
+    email
+    currencyCode
+    myshopifyDomain
+    timezoneAbbreviation
+    plan {
+      displayName
+      partnerDevelopment
+      shopifyPlus
+    }
+    primaryDomain {
+      host
+      url
+    }
+  }
+}

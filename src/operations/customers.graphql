@@ -1,0 +1,116 @@
+query GetCustomer($id: ID!) {
+  customer(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    phone
+    state
+    tags
+    createdAt
+    updatedAt
+    defaultAddress {
+      id
+      address1
+      address2
+      city
+      province
+      country
+      zip
+    }
+    addresses(first: 20) {
+      id
+      address1
+      address2
+      city
+      province
+      country
+      zip
+    }
+    orders(first: 10, reverse: true) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          displayFinancialStatus
+          currentTotalPriceSet {
+            shopMoney {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+    metafields(first: 50) {
+      edges {
+        node {
+          id
+          namespace
+          key
+          value
+          type
+          compareDigest
+        }
+      }
+    }
+  }
+}
+
+query ListCustomers($first: Int!, $query: String, $after: String) {
+  customers(first: $first, query: $query, after: $after) {
+    edges {
+      node {
+        id
+        firstName
+        lastName
+        email
+        phone
+        state
+        tags
+        createdAt
+        updatedAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateCustomer($input: CustomerInput!) {
+  customerCreate(input: $input) {
+    customer {
+      id
+      firstName
+      lastName
+      email
+      phone
+      state
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation UpdateCustomer($input: CustomerInput!) {
+  customerUpdate(input: $input) {
+    customer {
+      id
+      firstName
+      lastName
+      email
+      phone
+      state
+      updatedAt
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

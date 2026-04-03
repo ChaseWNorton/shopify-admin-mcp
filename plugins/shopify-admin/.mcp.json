@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "shopify": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "shopify-admin-mcp"
+      ],
+      "env": {
+        "SHOPIFY_STORE": "my-store.myshopify.com",
+        "SHOPIFY_ACCESS_TOKEN": "shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "SHOPIFY_API_VERSION": "2025-07"
+      }
+    }
+  }
+}

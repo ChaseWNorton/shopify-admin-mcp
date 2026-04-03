@@ -1,0 +1,75 @@
+query ListDiscounts($first: Int!, $query: String, $after: String) {
+  discountNodes(first: $first, query: $query, after: $after) {
+    edges {
+      node {
+        id
+        discount {
+          __typename
+          ... on DiscountCodeBasic {
+            title
+            status
+            startsAt
+            endsAt
+            codes(first: 10) {
+              edges {
+                node {
+                  code
+                }
+              }
+            }
+          }
+          ... on DiscountAutomaticBasic {
+            title
+            status
+            startsAt
+            endsAt
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateBasicDiscount($basicCodeDiscount: DiscountCodeBasicInput!) {
+  discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+    codeDiscountNode {
+      id
+      codeDiscount {
+        __typename
+        ... on DiscountCodeBasic {
+          title
+          status
+          startsAt
+          endsAt
+          codes(first: 10) {
+            edges {
+              node {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation DeleteDiscount($id: ID!) {
+  discountCodeDelete(id: $id) {
+    deletedCodeDiscountId
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

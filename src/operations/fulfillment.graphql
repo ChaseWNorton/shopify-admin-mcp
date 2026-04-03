@@ -1,0 +1,63 @@
+query ListFulfillmentOrders($orderId: ID!, $first: Int!, $after: String) {
+  order(id: $orderId) {
+    id
+    fulfillmentOrders(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          status
+          requestStatus
+          supportedActions {
+            action
+            externalUrl
+          }
+          assignedLocation {
+            location {
+              id
+              name
+            }
+          }
+          lineItems(first: 50) {
+            edges {
+              node {
+                id
+                remainingQuantity
+                totalQuantity
+                lineItem {
+                  id
+                  name
+                  sku
+                  quantity
+                }
+              }
+            }
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+mutation CreateFulfillment($fulfillment: FulfillmentV2Input!, $message: String) {
+  fulfillmentCreateV2(fulfillment: $fulfillment, message: $message) {
+    fulfillment {
+      id
+      status
+      displayStatus
+      createdAt
+      trackingInfo {
+        number
+        url
+        company
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

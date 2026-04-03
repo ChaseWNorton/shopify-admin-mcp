@@ -1,0 +1,96 @@
+query GetMetafields(
+  $ownerId: ID!
+  $first: Int!
+  $after: String
+  $namespace: String
+  $keys: [String!]
+) {
+  node(id: $ownerId) {
+    id
+    ... on HasMetafields {
+      metafields(first: $first, after: $after, namespace: $namespace, keys: $keys) {
+        edges {
+          node {
+            id
+            namespace
+            key
+            value
+            type
+            compareDigest
+            updatedAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+}
+
+query ListMetafieldDefinitions(
+  $ownerType: MetafieldOwnerType!
+  $first: Int!
+  $after: String
+  $namespace: String
+) {
+  metafieldDefinitions(
+    ownerType: $ownerType
+    first: $first
+    after: $after
+    namespace: $namespace
+  ) {
+    edges {
+      node {
+        id
+        name
+        namespace
+        key
+        ownerType
+        type {
+          name
+          category
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation SetMetafields($metafields: [MetafieldsSetInput!]!) {
+  metafieldsSet(metafields: $metafields) {
+    metafields {
+      id
+      namespace
+      key
+      value
+      type
+      compareDigest
+      updatedAt
+    }
+    userErrors {
+      field
+      message
+      code
+      elementIndex
+    }
+  }
+}
+
+mutation DeleteMetafields($metafields: [MetafieldIdentifierInput!]!) {
+  metafieldsDelete(metafields: $metafields) {
+    deletedMetafields {
+      ownerId
+      namespace
+      key
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

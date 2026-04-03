@@ -1,0 +1,20 @@
+{
+  "name": "shopify-admin-mcp",
+  "interface": {
+    "displayName": "Shopify Admin"
+  },
+  "plugins": [
+    {
+      "name": "shopify-admin",
+      "source": {
+        "source": "local",
+        "path": "./plugins/shopify-admin"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

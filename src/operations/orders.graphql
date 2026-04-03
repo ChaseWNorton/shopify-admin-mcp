@@ -1,0 +1,213 @@
+query GetOrder($id: ID!) {
+  order(id: $id) {
+    id
+    name
+    displayFinancialStatus
+    displayFulfillmentStatus
+    confirmed
+    cancelReason
+    cancelledAt
+    closedAt
+    createdAt
+    updatedAt
+    currentSubtotalPriceSet {
+      shopMoney {
+        amount
+        currencyCode
+      }
+    }
+    currentTotalPriceSet {
+      shopMoney {
+        amount
+        currencyCode
+      }
+    }
+    customer {
+      id
+      email
+      firstName
+      lastName
+    }
+    lineItems(first: 100) {
+      edges {
+        node {
+          id
+          name
+          quantity
+          sku
+          fulfillableQuantity
+          originalUnitPriceSet {
+            shopMoney {
+              amount
+              currencyCode
+            }
+          }
+          discountedTotalSet {
+            shopMoney {
+              amount
+              currencyCode
+            }
+          }
+          product {
+            id
+            title
+          }
+          variant {
+            id
+            title
+          }
+        }
+      }
+    }
+    transactions(first: 50) {
+      id
+      kind
+      status
+      gateway
+      processedAt
+      amountSet {
+        shopMoney {
+          amount
+          currencyCode
+        }
+      }
+    }
+    fulfillments {
+      id
+      status
+      displayStatus
+      createdAt
+      trackingInfo {
+        number
+        url
+        company
+      }
+      fulfillmentLineItems(first: 50) {
+        edges {
+          node {
+            id
+            quantity
+            lineItem {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query ListOrders($first: Int!, $query: String, $after: String) {
+  orders(first: $first, query: $query, after: $after) {
+    edges {
+      node {
+        id
+        name
+        displayFinancialStatus
+        displayFulfillmentStatus
+        createdAt
+        currentTotalPriceSet {
+          shopMoney {
+            amount
+            currencyCode
+          }
+        }
+        customer {
+          id
+          email
+          firstName
+          lastName
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CancelOrder(
+  $orderId: ID!
+  $reason: OrderCancelReason!
+  $restock: Boolean!
+  $notifyCustomer: Boolean
+  $staffNote: String
+  $refundMethod: OrderCancelRefundMethodInput
+) {
+  orderCancel(
+    orderId: $orderId
+    reason: $reason
+    restock: $restock
+    notifyCustomer: $notifyCustomer
+    staffNote: $staffNote
+    refundMethod: $refundMethod
+  ) {
+    job {
+      id
+      done
+    }
+    orderCancelUserErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation CloseOrder($input: OrderCloseInput!) {
+  orderClose(input: $input) {
+    order {
+      id
+      name
+      closedAt
+      displayFinancialStatus
+      displayFulfillmentStatus
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation CreateDraftOrder($input: DraftOrderInput!) {
+  draftOrderCreate(input: $input) {
+    draftOrder {
+      id
+      name
+      invoiceUrl
+      status
+      createdAt
+      totalPriceSet {
+        shopMoney {
+          amount
+          currencyCode
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation CompleteDraftOrder($id: ID!, $sourceName: String) {
+  draftOrderComplete(id: $id, sourceName: $sourceName) {
+    draftOrder {
+      id
+      name
+      status
+      order {
+        id
+        name
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

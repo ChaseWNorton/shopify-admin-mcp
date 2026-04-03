@@ -1,0 +1,58 @@
+query ListWebhooks(
+  $first: Int!
+  $after: String
+  $query: String
+  $topics: [WebhookSubscriptionTopic!]
+) {
+  webhookSubscriptions(first: $first, after: $after, query: $query, topics: $topics) {
+    edges {
+      node {
+        id
+        topic
+        callbackUrl
+        format
+        filter
+        includeFields
+        metafieldNamespaces
+        createdAt
+        updatedAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateWebhook(
+  $topic: WebhookSubscriptionTopic!
+  $webhookSubscription: WebhookSubscriptionInput!
+) {
+  webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+    webhookSubscription {
+      id
+      topic
+      callbackUrl
+      format
+      filter
+      includeFields
+      metafieldNamespaces
+      createdAt
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteWebhook($id: ID!) {
+  webhookSubscriptionDelete(id: $id) {
+    deletedWebhookSubscriptionId
+    userErrors {
+      field
+      message
+    }
+  }
+}

@@ -1,0 +1,79 @@
+query GetInventoryLevel($inventoryItemId: ID!, $locationId: ID!) {
+  inventoryItem(id: $inventoryItemId) {
+    id
+    sku
+    tracked
+    inventoryLevel(locationId: $locationId) {
+      id
+      updatedAt
+      location {
+        id
+        name
+      }
+      quantities(names: ["available", "on_hand", "committed", "incoming", "reserved"]) {
+        name
+        quantity
+        updatedAt
+      }
+    }
+  }
+}
+
+query ListLocations($first: Int!, $after: String, $query: String) {
+  locations(first: $first, after: $after, query: $query) {
+    edges {
+      node {
+        id
+        name
+        isActive
+        fulfillsOnlineOrders
+        address {
+          address1
+          city
+          countryCode
+          zip
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation AdjustInventory($input: InventoryAdjustQuantitiesInput!) {
+  inventoryAdjustQuantities(input: $input) {
+    inventoryAdjustmentGroup {
+      createdAt
+      reason
+      referenceDocumentUri
+      changes {
+        name
+        delta
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation SetInventory($input: InventorySetOnHandQuantitiesInput!) {
+  inventorySetOnHandQuantities(input: $input) {
+    inventoryAdjustmentGroup {
+      createdAt
+      reason
+      referenceDocumentUri
+      changes {
+        name
+        delta
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
