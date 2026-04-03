@@ -1,0 +1,34 @@
+{
+  "name": "shopify-admin",
+  "description": "Shopify Admin GraphQL MCP tools for Claude Code.",
+  "author": {
+    "name": "Chas E Norton",
+    "url": "https://github.com/ChaseWNorton"
+  },
+  "homepage": "https://github.com/ChaseWNorton/shopify-admin-mcp",
+  "repository": "https://github.com/ChaseWNorton/shopify-admin-mcp",
+  "license": "BUSL-1.1",
+  "keywords": [
+    "shopify",
+    "mcp",
+    "graphql",
+    "commerce",
+    "claude"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "shopify_store": {
+      "description": "Shopify store domain, for example my-store.myshopify.com",
+      "sensitive": false
+    },
+    "shopify_access_token": {
+      "description": "Shopify custom app Admin API access token, for example shpat_...",
+      "sensitive": true
+    },
+    "shopify_api_version": {
+      "description": "Shopify Admin API version, for example 2025-07",
+      "sensitive": false
+    }
+  }
+}

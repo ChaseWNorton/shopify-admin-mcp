@@ -6,6 +6,7 @@ coverage
 .env.*
 !.env.example
 .npmrc
+.claude/settings.local.json
 *.log
 *.tgz
 .vitest-temp

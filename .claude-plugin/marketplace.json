@@ -1,0 +1,32 @@
+{
+  "name": "chasewnorton-tools",
+  "owner": {
+    "name": "Chas E Norton"
+  },
+  "metadata": {
+    "description": "Claude plugins published from the ChaseWNorton shopify-admin-mcp repository.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "shopify-admin",
+      "version": "0.1.0",
+      "description": "Shopify Admin GraphQL MCP tools and workflow guidance for Claude.",
+      "author": {
+        "name": "Chas E Norton",
+        "url": "https://github.com/ChaseWNorton"
+      },
+      "homepage": "https://github.com/ChaseWNorton/shopify-admin-mcp",
+      "repository": "https://github.com/ChaseWNorton/shopify-admin-mcp",
+      "license": "BUSL-1.1",
+      "keywords": [
+        "shopify",
+        "mcp",
+        "graphql",
+        "commerce",
+        "claude"
+      ],
+      "source": "./plugins/claude-shopify-admin"
+    }
+  ]
+}

@@ -75,6 +75,37 @@ Claude Desktop configuration:
 }
 ```
 
+## Claude Code
+
+This repo now includes both a project-level Claude skill and a distributable Claude plugin.
+
+### Project skill
+
+The repo-local skill lives at [`.claude/skills/shopify-admin/SKILL.md`](./.claude/skills/shopify-admin/SKILL.md). When you open this repository in Claude Code, the skill is available for project-scoped Shopify work as `/shopify-admin`.
+
+### Personal plugin
+
+The Claude plugin bundle lives at [`plugins/claude-shopify-admin`](./plugins/claude-shopify-admin) with manifest metadata in [`plugins/claude-shopify-admin/.claude-plugin/plugin.json`](./plugins/claude-shopify-admin/.claude-plugin/plugin.json). It ships:
+
+- the `shopify` MCP server via [`plugins/claude-shopify-admin/.mcp.json`](./plugins/claude-shopify-admin/.mcp.json)
+- a plugin skill available as `/shopify-admin:workflow`
+- prompted user configuration for `shopify_store`, `shopify_access_token`, and `shopify_api_version`
+
+The repository also includes a Claude marketplace at [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) and a repo-level hint in [`.claude/settings.json`](./.claude/settings.json) so Claude can discover the marketplace from GitHub.
+
+Install it as a personal Claude plugin:
+
+```bash
+claude plugin marketplace add ChaseWNorton/shopify-admin-mcp
+claude plugin install shopify-admin@chasewnorton-tools --scope user
+```
+
+For local plugin testing without installing:
+
+```bash
+claude --plugin-dir ./plugins/claude-shopify-admin
+```
+
 ## Codex Plugin
 
 A repo-local Codex plugin wrapper is included at [`plugins/shopify-admin/.codex-plugin/plugin.json`](./plugins/shopify-admin/.codex-plugin/plugin.json) with MCP wiring in [`plugins/shopify-admin/.mcp.json`](./plugins/shopify-admin/.mcp.json).

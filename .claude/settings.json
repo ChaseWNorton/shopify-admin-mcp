@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "chasewnorton-tools": {
+      "source": {
+        "source": "github",
+        "repo": "ChaseWNorton/shopify-admin-mcp"
+      }
+    }
+  }
+}
