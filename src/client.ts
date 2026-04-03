@@ -3,13 +3,14 @@ import {
   type AdminApiClient,
   type ClientResponse,
 } from "@shopify/admin-api-client";
+import { createAccessTokenProvider, type AccessTokenProvider } from "./auth.js";
 import { ShopifyMcpError, scrubSecrets } from "./errors.js";
 import { ThrottleManager, type ThrottleStatus } from "./throttle.js";
 
 export interface ShopifyClientConfig {
   store: string;
-  accessToken: string;
   apiVersion: string;
+  accessToken?: string;
 }
 
 export interface QueryResult<T> {
@@ -35,6 +36,8 @@ export interface QueryOptions {
 
 interface ShopifyClientDependencies {
   adminClient?: Pick<AdminApiClient, "request">;
+  adminClientFactory?: (accessToken: string) => Pick<AdminApiClient, "request">;
+  authProvider?: AccessTokenProvider;
   throttle?: ThrottleManager;
 }
 
@@ -50,15 +53,47 @@ export function createShopifyClient(
   config: ShopifyClientConfig,
   dependencies: ShopifyClientDependencies = {},
 ): ShopifyClient {
-  const adminClient =
-    dependencies.adminClient ??
-    createAdminApiClient({
-      storeDomain: config.store,
-      accessToken: config.accessToken,
+  const authProvider =
+    dependencies.authProvider ??
+    createAccessTokenProvider({
+      kind: "custom-app",
+      store: config.store,
+      accessToken: config.accessToken ?? "",
       apiVersion: config.apiVersion,
-      retries: 0,
     });
+  const adminClientFactory =
+    dependencies.adminClientFactory ??
+    ((accessToken: string) =>
+      createAdminApiClient({
+        storeDomain: config.store,
+        accessToken,
+        apiVersion: config.apiVersion,
+        retries: 0,
+      }));
   const throttle = dependencies.throttle ?? new ThrottleManager();
+  let cachedAdminClient:
+    | {
+        accessToken: string;
+        client: Pick<AdminApiClient, "request">;
+      }
+    | undefined;
+
+  function getAdminClient(accessToken: string): Pick<AdminApiClient, "request"> {
+    if (dependencies.adminClient) {
+      return dependencies.adminClient;
+    }
+
+    if (cachedAdminClient?.accessToken === accessToken) {
+      return cachedAdminClient.client;
+    }
+
+    const nextClient = adminClientFactory(accessToken);
+    cachedAdminClient = {
+      accessToken,
+      client: nextClient,
+    };
+    return nextClient;
+  }
 
   return {
     config,
@@ -75,6 +110,8 @@ export function createShopifyClient(
       while (true) {
         await throttle.waitForCapacity(estimatedCost);
 
+        const accessToken = await authProvider.getAccessToken();
+        const adminClient = getAdminClient(accessToken);
         const requestOptions = variables ? { variables } : undefined;
         const response = await adminClient.request<TData>(document, requestOptions);
 
@@ -99,6 +136,19 @@ export function createShopifyClient(
           };
         }
 
+        if (isUnauthorized(response) && authProvider.kind === "client-credentials") {
+          if (attempt >= maxRetries) {
+            throw new ShopifyMcpError("Shopify access token refresh failed after retry attempts", {
+              code: "AUTH_REQUEST_FAILED",
+              details: { retries: attempt },
+            });
+          }
+
+          attempt += 1;
+          await authProvider.getAccessToken({ forceRefresh: true });
+          continue;
+        }
+
         if (isThrottled(response)) {
           if (attempt >= maxRetries) {
             throw new ShopifyMcpError("Shopify request was throttled after retry attempts", {
@@ -117,7 +167,7 @@ export function createShopifyClient(
           continue;
         }
 
-        throw responseError(response, config.accessToken);
+        throw responseError(response, authProvider.redact);
       }
     },
   };
@@ -175,19 +225,46 @@ function isThrottled(response: ClientResponse<unknown>): boolean {
   });
 }
 
-function responseError(response: ClientResponse<unknown>, accessToken: string): ShopifyMcpError {
+function isUnauthorized(response: ClientResponse<unknown>): boolean {
+  if (response.errors?.networkStatusCode === 401) {
+    return true;
+  }
+
+  const graphQLErrors = response.errors?.graphQLErrors;
+  if (!Array.isArray(graphQLErrors)) {
+    return false;
+  }
+
+  return graphQLErrors.some((error) => {
+    const code = String(asRecord(error.extensions)?.code ?? "");
+    const message = String(error.message ?? "").toUpperCase();
+
+    return (
+      code === "UNAUTHORIZED" ||
+      code === "ACCESS_DENIED" ||
+      message.includes("UNAUTHORIZED") ||
+      message.includes("ACCESS DENIED") ||
+      message.includes("INVALID API KEY OR ACCESS TOKEN")
+    );
+  });
+}
+
+function responseError(
+  response: ClientResponse<unknown>,
+  redact: (message: string) => string,
+): ShopifyMcpError {
   const graphQLErrors = response.errors?.graphQLErrors ?? [];
   const messages = graphQLErrors
-    .map((error) => scrubSecrets(String(error.message ?? "Unknown GraphQL error"), [accessToken]))
+    .map((error) => redact(String(error.message ?? "Unknown GraphQL error")))
     .filter(Boolean);
-  const networkMessage = scrubSecrets(response.errors?.message ?? "", [accessToken]);
+  const networkMessage = redact(response.errors?.message ?? "");
   const message = messages[0] ?? networkMessage ?? "Shopify request failed";
 
   return new ShopifyMcpError(message, {
     code: "SHOPIFY_REQUEST_FAILED",
     details: {
       graphQLErrors: graphQLErrors.map((error) => ({
-        message: scrubSecrets(String(error.message ?? ""), [accessToken]),
+        message: redact(String(error.message ?? "")),
         path: error.path,
         code: asRecord(error.extensions)?.code,
       })),

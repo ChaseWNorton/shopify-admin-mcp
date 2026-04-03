@@ -9,10 +9,11 @@ It also includes a bundled Codex skill, `$shopify-admin`, that gives Codex a con
 Edit [`.mcp.json`](./.mcp.json) and set:
 
 - `SHOPIFY_STORE`
-- `SHOPIFY_ACCESS_TOKEN`
 - `SHOPIFY_API_VERSION`
+- `SHOPIFY_CLIENT_ID`
+- `SHOPIFY_CLIENT_SECRET`
 
-Each user should use their own Shopify store and token values.
+Each user should use their own Shopify store and app credential values. The MCP mints the short-lived Admin API access token automatically at runtime.
 
 ## Runtime
 

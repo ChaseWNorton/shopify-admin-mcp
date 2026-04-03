@@ -4,7 +4,7 @@ Production-grade MCP server for the Shopify Admin GraphQL API. It exposes typed,
 
 ## Status
 
-Custom app token authentication is implemented for v1. OAuth is intentionally scaffolded but not yet active.
+Client credentials authentication for Shopify Dev Dashboard apps is implemented, and legacy custom app access tokens are still supported.
 
 On April 2, 2026, Shopify's live Admin GraphQL endpoint rejected `2025-04` as an invalid version, so this repository defaults to `2025-07` even though older examples in the original spec referenced `2025-04`.
 
@@ -28,23 +28,26 @@ npm run build
 
 ## Configuration
 
-### Custom App Token
+### Dev Dashboard App Credentials
 
 ```env
 SHOPIFY_STORE=my-store.myshopify.com
-SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 SHOPIFY_API_VERSION=2025-07
-```
-
-### OAuth
-
-Reserved for a future release:
-
-```env
 SHOPIFY_CLIENT_ID=your_api_key
 SHOPIFY_CLIENT_SECRET=your_api_secret
-SHOPIFY_SCOPES=read_products,write_products,read_orders
 ```
+
+This is the recommended setup for Shopify's current Dev Dashboard apps. The server exchanges `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET` for a 24-hour Admin API token automatically and renews it when needed.
+
+### Legacy Custom App Token
+
+```env
+SHOPIFY_STORE=my-store.myshopify.com
+SHOPIFY_API_VERSION=2025-07
+SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+This path still works, but it is no longer the best default for shared installs.
 
 ## Usage
 
@@ -52,8 +55,9 @@ Run directly:
 
 ```bash
 SHOPIFY_STORE=my-store.myshopify.com \
-SHOPIFY_ACCESS_TOKEN=shpat_... \
 SHOPIFY_API_VERSION=2025-07 \
+SHOPIFY_CLIENT_ID=your_api_key \
+SHOPIFY_CLIENT_SECRET=your_api_secret \
 npx shopify-admin-mcp
 ```
 
@@ -67,8 +71,9 @@ Claude Desktop configuration:
       "args": ["-y", "shopify-admin-mcp"],
       "env": {
         "SHOPIFY_STORE": "my-store.myshopify.com",
-        "SHOPIFY_ACCESS_TOKEN": "shpat_...",
-        "SHOPIFY_API_VERSION": "2025-07"
+        "SHOPIFY_API_VERSION": "2025-07",
+        "SHOPIFY_CLIENT_ID": "your_api_key",
+        "SHOPIFY_CLIENT_SECRET": "your_api_secret"
       }
     }
   }
@@ -89,7 +94,7 @@ The Claude plugin bundle lives at [`plugins/claude-shopify-admin`](./plugins/cla
 
 - the `shopify` MCP server via [`plugins/claude-shopify-admin/.mcp.json`](./plugins/claude-shopify-admin/.mcp.json)
 - a plugin skill available as `/shopify-admin:workflow`
-- prompted user configuration for `shopify_store`, `shopify_access_token`, and `shopify_api_version`
+- prompted user configuration for `shopify_store`, `shopify_client_id`, `shopify_client_secret`, and `shopify_api_version`
 
 The repository also includes a Claude marketplace at [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) and a repo-level hint in [`.claude/settings.json`](./.claude/settings.json) so Claude can discover the marketplace from GitHub.
 
@@ -126,15 +131,16 @@ To share it with your team:
       "args": ["-y", "shopify-admin-mcp"],
       "env": {
         "SHOPIFY_STORE": "my-store.myshopify.com",
-        "SHOPIFY_ACCESS_TOKEN": "shpat_...",
-        "SHOPIFY_API_VERSION": "2025-07"
+        "SHOPIFY_API_VERSION": "2025-07",
+        "SHOPIFY_CLIENT_ID": "your_api_key",
+        "SHOPIFY_CLIENT_SECRET": "your_api_secret"
       }
     }
   }
 }
 ```
 
-The plugin intentionally uses bring-your-own Shopify credentials. No shared access token should be committed to the plugin.
+The plugin intentionally uses bring-your-own Shopify credentials. No shared client secret or access token should be committed to the plugin.
 
 ## Publish
 
@@ -213,8 +219,9 @@ With real store credentials:
 
 ```bash
 SHOPIFY_STORE=your-dev-store.myshopify.com \
-SHOPIFY_ACCESS_TOKEN=shpat_... \
 SHOPIFY_API_VERSION=2025-07 \
+SHOPIFY_CLIENT_ID=your_api_key \
+SHOPIFY_CLIENT_SECRET=your_api_secret \
 echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"shopify_get_shop","arguments":{}}}' | node dist/index.js
 ```
 

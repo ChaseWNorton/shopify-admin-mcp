@@ -22,8 +22,12 @@
       "description": "Shopify store domain, for example my-store.myshopify.com",
       "sensitive": false
     },
-    "shopify_access_token": {
-      "description": "Shopify custom app Admin API access token, for example shpat_...",
+    "shopify_client_id": {
+      "description": "Shopify Dev Dashboard app client ID",
+      "sensitive": false
+    },
+    "shopify_client_secret": {
+      "description": "Shopify Dev Dashboard app client secret",
       "sensitive": true
     },
     "shopify_api_version": {

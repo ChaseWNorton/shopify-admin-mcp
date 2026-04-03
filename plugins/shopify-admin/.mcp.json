@@ -8,8 +8,9 @@
       ],
       "env": {
         "SHOPIFY_STORE": "my-store.myshopify.com",
-        "SHOPIFY_ACCESS_TOKEN": "shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "SHOPIFY_API_VERSION": "2025-07"
+        "SHOPIFY_API_VERSION": "2025-07",
+        "SHOPIFY_CLIENT_ID": "your_api_key",
+        "SHOPIFY_CLIENT_SECRET": "your_api_secret"
       }
     }
   }
