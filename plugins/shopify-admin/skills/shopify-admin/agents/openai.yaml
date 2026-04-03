@@ -1,0 +1,5 @@
+interface:
+  display_name: "Shopify Admin"
+  short_description: "Help with Shopify Admin tasks"
+  default_prompt: "Use $shopify-admin to inspect products, orders, inventory, and other Shopify admin data through the MCP tools."
+  brand_color: "#0A7C66"

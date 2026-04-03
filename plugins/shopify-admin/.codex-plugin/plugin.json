@@ -9,6 +9,7 @@
     "graphql",
     "commerce"
   ],
+  "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Shopify Admin",

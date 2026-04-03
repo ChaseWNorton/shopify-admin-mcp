@@ -79,6 +79,8 @@ Claude Desktop configuration:
 
 A repo-local Codex plugin wrapper is included at [`plugins/shopify-admin/.codex-plugin/plugin.json`](./plugins/shopify-admin/.codex-plugin/plugin.json) with MCP wiring in [`plugins/shopify-admin/.mcp.json`](./plugins/shopify-admin/.mcp.json).
 
+The plugin also includes a Codex skill at [`plugins/shopify-admin/skills/shopify-admin/SKILL.md`](./plugins/shopify-admin/skills/shopify-admin/SKILL.md), so Codex can explicitly use `$shopify-admin` for Shopify Admin workflows instead of relying on raw tool names alone.
+
 To share it with your team:
 
 1. Publish this package to npm as `shopify-admin-mcp`.

@@ -2,6 +2,8 @@
 
 This plugin wraps the published `shopify-admin-mcp` npm package for Codex.
 
+It also includes a bundled Codex skill, `$shopify-admin`, that gives Codex a concise workflow guide for Shopify Admin tasks.
+
 ## Before using it
 
 Edit [`.mcp.json`](./.mcp.json) and set:
